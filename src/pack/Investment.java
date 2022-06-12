@@ -18,12 +18,12 @@ public abstract class Investment implements Cloneable{
 
     public void setPrice(double price)
     {
-        if (price > 0) m_price = price;
+         m_price = price;
     }
 
     public void setAmount(int number)
     {
-        if (number > 0) m_amount = number;
+         m_amount = number;
     }
 
     public double getPrice() { return m_price; }
