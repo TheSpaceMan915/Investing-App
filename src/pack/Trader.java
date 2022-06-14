@@ -5,7 +5,7 @@ import java.util.*;
 public class Trader {
     private final String m_id;
     private double m_money;                          //the amount of money on a trader's account
-    private List<Stock> m_arr_stocks;
+    private final List<Investment> m_arr_investments;
 
     public Trader()
     {
@@ -16,24 +16,24 @@ public class Trader {
     {
         m_id = id;
         m_money = money;
-        m_arr_stocks = new ArrayList<>();
+        m_arr_investments = new ArrayList<>();
     }
 
     public String getID() { return m_id; }
 
     public double getMoney() { return m_money; }
 
-    public List<Stock> getArrStocks() { return m_arr_stocks; }
+    public List<Investment> getArrInvestments() { return m_arr_investments; }
 
     private void setMoney(double money) { m_money = money; }
 
-    public void buyStock(String company, int number)
+    public void buyInvestment(String key, int number)
     {
-        Stock stock_on_market = Stock.findStockOnMarket(company);
+        Investment investment_on_market = Stock.findInvestmentOnMarket(key);
         double investments_price = 0.0;
 
         try
-        { investments_price = stock_on_market.getPrice() * number; }
+        { investments_price = investment_on_market.getPrice() * number; }
         catch (NullPointerException exep)
         {
             JOptionPane.showMessageDialog(GUI.getFrame(),"There is no stock like this on the stock market");
@@ -42,61 +42,62 @@ public class Trader {
 
         if (m_money - investments_price > 0)
         {
-            if (stock_on_market.getAmount() >= number)
+            if (investment_on_market.getAmount() >= number)
             {
-                try
+                //amount of investments that were available before the purchase
+                int amount_before = investment_on_market.getAmount();
+
+                //amount of investments that are available after the purchase
+                int amount_after = investment_on_market.getAmount() - number;
+                investment_on_market.setAmount(amount_after);
+
+
+                //if the trader has this type of investment object in his portfolio, add to that object new investments
+                Investment trader_investment = Stock.checkTraderInvestments(key);
+                if (trader_investment != null)
+                { trader_investment.setAmount(trader_investment.getAmount() + number); }
+                else
                 {
-                    //make a clone of the object on the market for trader's portfolio
-                    Stock temp = (Stock) stock_on_market.clone();
+                    Investment temp = null;
+                    try
+                    {
+                        //make a clone of the object on the market for trader's portfolio
+                        temp = (Investment) investment_on_market.clone();
+                    }
+                    catch (CloneNotSupportedException exep)
+                        { exep.printStackTrace(); }
 
-                    //amount of investments that were available before the purchase
-                    int amount_before = stock_on_market.getAmount();
-
-                    //amount of investments that are available after the purchase
-                    int amount_after = stock_on_market.getAmount() - number;
-                    stock_on_market.setAmount(amount_after);
-                    temp.setAmount(amount_before - amount_after);
-
-                                                                                //if the trader has this type of stock
-                    Stock trader_stock = Stock.checkTraderStocks(company);       //add to that object new stocks
-                    if (trader_stock != null)
-                    { trader_stock.setAmount(trader_stock.getAmount() + number); }
-                    else
-                    { m_arr_stocks.add(temp); }
-
-                    m_money -= investments_price;
+                    temp.setAmount(number);
+                    m_arr_investments.add(temp);
                 }
-                catch (CloneNotSupportedException exep)
-                { exep.printStackTrace(); }
+
+                m_money -= investments_price;
             }
             else
-            { JOptionPane.showMessageDialog(GUI.getFrame(),"There are not enough stocks on the market. We only have " +  stock_on_market.getAmount() + " of them"); }
+            { JOptionPane.showMessageDialog(GUI.getFrame(),"There are not enough stocks on the market. We only have " +  investment_on_market.getAmount() + " of them"); }
         }
-            else
+        else
         { JOptionPane.showMessageDialog(GUI.getFrame(),"You don't have enough money on your account"); }
     }
 
-    public void sellStock(String company, int number)
+    public void sellInvestment(String key, int number)
     {
-        Stock stock_on_market = Stock.findStockOnMarket(company);                 //the stock on the StockMarket
-        Stock trader_stock = Stock.checkTraderStocks(company);                  //the stock in trader's portfolio
+        Investment investment_on_market = Stock.findInvestmentOnMarket(key);                 //the investment on the StockMarket
+        Investment trader_investment = Stock.checkTraderInvestments(key);                  //the investment in trader's portfolio
 
-        if (trader_stock != null)             //if the stock has been found in the trader's portfolio
+        if (trader_investment != null)             //if the investment has been found in the trader's portfolio
         {
-            stock_on_market.setAmount(stock_on_market.getAmount() + number);
-            trader_stock.setAmount(trader_stock.getAmount() - number);
+            investment_on_market.setAmount(investment_on_market.getAmount() + number);
+            trader_investment.setAmount(trader_investment.getAmount() - number);
 
-            double investments_price = stock_on_market.getPrice() * number;;
+            double investments_price = investment_on_market.getPrice() * number;;
             StockMarket.getCurrentTrader().setMoney(StockMarket.getCurrentTrader().getMoney() + investments_price);
 
-            if (trader_stock.getAmount() == 0)
-            { StockMarket.getCurrentTrader().getArrStocks().remove(trader_stock); }
+            if (trader_investment.getAmount() == 0)
+            { StockMarket.getCurrentTrader().getArrInvestments().remove(trader_investment); }
         }
         else
-        {
-            JOptionPane.showMessageDialog(GUI.getFrame(),"There is no stock like this in your portfolio");
-        }
-
+        { JOptionPane.showMessageDialog(GUI.getFrame(),"There is no stock like this in your portfolio"); }
     }
 
 }

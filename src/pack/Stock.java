@@ -1,22 +1,16 @@
 package pack;
 
 public class Stock extends Investment {
-    private String m_company;                   //name of a company
 
-    public Stock(double price, int number,String company)
+    public Stock(double price, int number,String key)
+    { super(price, number,key); }
+
+    public static Investment findInvestmentOnMarket(String key)
     {
-        super(price, number);
-        m_company = company;
-    }
-
-    public String getCompany() { return m_company; }
-
-    public static Stock findStockOnMarket(String company)
-    {
-        Stock stock_ref = null;                                     //find the stock on the market
-        for (Stock temp : StockMarket.getArrAllStocks())            //that a trader wants to buy
+        Investment stock_ref = null;                                     //find the stock on the market
+        for (Investment temp : StockMarket.getArrAllInvestments())            //that a trader wants to buy
         {
-            if (temp.getCompany().equals(company))
+            if (temp.getKey().equals(key))
             {
                 stock_ref = temp;
                 break;
@@ -24,17 +18,18 @@ public class Stock extends Investment {
         }
         return stock_ref;
     }
-    public static Stock checkTraderStocks(String company)
+    public static Investment checkTraderInvestments(String key)
     {
-        Stock stock_ref = null;                                                 //find out if the trader has
-        for (Stock temp : StockMarket.getCurrentTrader().getArrStocks())        //this stock in his portfolio
+        Investment stock_ref = null;                                                 //find out if the trader has
+        for (Investment temp : StockMarket.getCurrentTrader().getArrInvestments())        //this stock in his portfolio
         {
-            if (temp.getCompany().equals(company))
+            if (temp.getKey().equals(key))
             {
                 stock_ref = temp;
                 break;
             }
         }
+
         return stock_ref;
     }
 }

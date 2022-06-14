@@ -4,17 +4,17 @@ import java.util.List;
 
 public class StockMarket {
 
-    private static List<Stock> m_arr_all_stocks = new ArrayList<>();
+    private static List<Investment> m_arr_all_investments = new ArrayList<>();
     private static List<Trader> m_arr_all_traders = new ArrayList<>();
     private static Trader m_current_trader = new Trader(1200,"11");
 
     public StockMarket()
     {
-        m_arr_all_stocks = new ArrayList<>();
+        m_arr_all_investments = new ArrayList<>();
         m_arr_all_traders = new ArrayList<>();              //get the data for investors and investments from the database
     }
 
-    public static List<Stock> getArrAllStocks() { return m_arr_all_stocks; }
+    public static List<Investment> getArrAllInvestments() { return m_arr_all_investments; }
 
     public static List<Trader> getArrAllTraders() { return m_arr_all_traders; }
 
@@ -40,16 +40,17 @@ public class StockMarket {
     {
         GUI.buildGUI();
 
-        Stock stock_obj1 = new Stock(140.4,2,"Tesla");
-        Stock stock_obj2 = new Stock(170.5,3,"Apple");
+        Investment stock_obj1 = new Stock(140.4,2,"Tesla");
+        Investment stock_obj2 = new Stock(170.5,3,"Apple");
 
-        StockMarket.getArrAllStocks().add(stock_obj1);
-        StockMarket.getArrAllStocks().add(stock_obj2);
+        StockMarket.getArrAllInvestments().add(stock_obj1);
+        StockMarket.getArrAllInvestments().add(stock_obj2);
         StockMarket.getArrAllTraders().add(m_current_trader);
 
-        m_current_trader.buyStock("Apple",2);
-        m_current_trader.buyStock("Apple",1);
-        m_current_trader.buyStock("Tesla",1);
-        m_current_trader.sellStock("Apple",1);
+        //m_current_trader.buyInvestment("Apple",1);
+       // m_current_trader.buyInvestment("Apple",1);
+       // m_current_trader.buyInvestment("Tesla",1);
+        //m_current_trader.sellInvestment("Apple",1);
+
     }
 }

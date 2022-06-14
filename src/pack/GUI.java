@@ -40,8 +40,8 @@ public class GUI {
     {
         JPanel panel = new JPanel(new GridLayout(3,1));
         JButton trader_info_button = new JButton("Trader's info");
-        JButton buy_button = new JButton("Buy stocks");
-        JButton button3 = new JButton("Sell stocks");
+        JButton buy_button = new JButton("Buy investments");
+        JButton sell_button = new JButton("Sell investments");
 
 
         JButton return_button = new JButton("Go back");         //the button to return to the main window
@@ -56,7 +56,7 @@ public class GUI {
 
         panel.add(trader_info_button);
         panel.add(buy_button);
-        panel.add(button3);
+        panel.add(sell_button);
         m_frame.add(BorderLayout.CENTER,panel);
 
         trader_info_button.addActionListener(event2 ->
@@ -69,7 +69,7 @@ public class GUI {
             Box box_panel = new Box(BoxLayout.Y_AXIS);
             JLabel id_label = new JLabel("ID: "+ StockMarket.getCurrentTrader().getID());
             JLabel money_label = new JLabel("Amount of money: "+ StockMarket.getCurrentTrader().getMoney());
-            JLabel stocks_label = new JLabel("Your stocks: ");
+            JLabel stocks_label = new JLabel("Your investments: ");
 
             Font font_obj = new Font("Serif",Font.PLAIN,24);
             id_label.setFont(font_obj);
@@ -84,15 +84,15 @@ public class GUI {
             box_panel.add(stocks_label);
 
             //create a JTable to show trader's stocks
-            int arr_size = StockMarket.getCurrentTrader().getArrStocks().size();
-            String[] column_name = {"Company", "Amount", "Price"};
+            int arr_size = StockMarket.getCurrentTrader().getArrInvestments().size();
+            String[] column_name = {"Investment", "Amount", "Price"};
             Object[][] data_arr = new Object[arr_size][3];
 
             for (int i = 0; i < arr_size; i++)
             {
-               data_arr[i][0] = StockMarket.getCurrentTrader().getArrStocks().get(i).getCompany();
-               data_arr[i][1] = StockMarket.getCurrentTrader().getArrStocks().get(i).getAmount();
-               data_arr[i][2] = StockMarket.getCurrentTrader().getArrStocks().get(i).getPrice();
+               data_arr[i][0] = StockMarket.getCurrentTrader().getArrInvestments().get(i).getKey();
+               data_arr[i][1] = StockMarket.getCurrentTrader().getArrInvestments().get(i).getAmount();
+               data_arr[i][2] = StockMarket.getCurrentTrader().getArrInvestments().get(i).getPrice();
             }
 
             JTable data_table = new JTable(data_arr,column_name);
@@ -111,9 +111,11 @@ public class GUI {
             m_frame.getContentPane().repaint();
             m_frame.getContentPane().revalidate();
 
-            JPanel buy_panel = new JPanel();
-            JLabel company_label = new JLabel("Enter company ");
-            JLabel number_label = new JLabel("Enter number of stocks ");
+            JPanel buy_panel = new JPanel();                        //set GridBagLayout for buy_panel
+            GridBagLayout layout_obj = new GridBagLayout();
+            buy_panel.setLayout(layout_obj);
+            JLabel company_label = new JLabel("Enter investment ");
+            JLabel number_label = new JLabel("Enter amount ");
             JTextField company_field = new JTextField(20);
             JTextField number_field = new JTextField(20);
             JButton buy_button2 = new JButton("Buy");
@@ -126,13 +128,13 @@ public class GUI {
             {
                 try
                 {
-                    StockMarket.getCurrentTrader().buyStock(company_field.getText(), Integer.parseInt(number_field.getText()));
+                    StockMarket.getCurrentTrader().buyInvestment(company_field.getText(), Integer.parseInt(number_field.getText()));
                     JOptionPane.showMessageDialog(m_frame,"Your purchase has been confirmed!");
                 }
                 catch(Exception exep)
                 {
-                    company_field.setText("You should enter a name of the company here");
-                    number_field.setText("And a number here");
+                    company_field.setText("You should enter a name of the investment here");
+                    number_field.setText("And amount here");
                 }
             });
 
@@ -145,6 +147,60 @@ public class GUI {
             m_frame.add(BorderLayout.CENTER,buy_panel);
             m_frame.add(BorderLayout.SOUTH,return_button);
         });
+
+        sell_button.addActionListener(event4 ->
+        {
+            m_frame.remove(panel);                                  //clear the frame
+            m_frame.getContentPane().repaint();
+            m_frame.getContentPane().revalidate();
+
+            JPanel sell_panel = new JPanel();
+            JLabel company_label = new JLabel("Enter investment ");
+            JLabel number_label = new JLabel("Enter amount ");
+            JTextField company_field = new JTextField(20);
+            JTextField number_field = new JTextField(20);
+            JButton sell_button2 = new JButton("Sell");
+
+            Font font_obj = new Font("Serif",Font.PLAIN,24);
+            company_label.setFont(font_obj);
+            number_label.setFont(font_obj);
+
+            sell_button2.addActionListener(event5 ->
+            {
+                try
+                {
+                    StockMarket.getCurrentTrader().sellInvestment(company_field.getText(), Integer.parseInt(number_field.getText()));
+                    JOptionPane.showMessageDialog(m_frame,"Success!");
+                }
+                catch(Exception exep)
+                {
+                    company_field.setText("You should enter a name of the investment here");
+                    number_field.setText("And amount here");
+                }
+            });
+
+            sell_panel.add(company_label);
+            sell_panel.add(company_field);
+            sell_panel.add(number_label);
+            sell_panel.add(number_field);
+            sell_panel.add(sell_button2);
+
+            m_frame.add(BorderLayout.CENTER,sell_panel);
+            m_frame.add(BorderLayout.SOUTH,return_button);
+        });
+    }
+
+    //the function is used for adding components to a JPanel with GridBagLayout manager
+    private static void addComponentsToPanel(Component comp_obj, Container cont_obj, GridBagLayout manager_obj, GridBagConstraints constrains_obj, int gridx, int gridy, int gridwidth, int gridheigth)
+    {
+        constrains_obj.gridx = gridx;
+        constrains_obj.gridy = gridy;
+
+        constrains_obj.gridwidth = gridwidth;
+        constrains_obj.gridheight = gridheigth;
+
+        manager_obj.setConstraints(comp_obj,constrains_obj);
+        cont_obj.add(comp_obj);
     }
 
     public static void buildGUI()
