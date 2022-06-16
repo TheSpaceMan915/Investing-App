@@ -3,7 +3,7 @@ package pack;
 public abstract class Investment implements Cloneable{
     private double m_price;                 //all prices are in USD
     private int m_amount;                   //amount of stocks, currency and e.t.
-    private String m_key;
+    private String m_key;                   //name of a company, currency name and e.t.
 
     public Investment()
     {

@@ -3,23 +3,21 @@ import javax.swing.*;
 import java.util.*;
 
 public class Trader {
-    private final String m_id;
+    private final int m_id;
     private double m_money;                          //the amount of money on a trader's account
     private final List<Investment> m_arr_investments;
 
     public Trader()
-    {
-        this(0,"5124");
-    }
+    { this(0,-1); }
 
-    public Trader(double money, String id)
+    public Trader(double money, int id)
     {
         m_id = id;
         m_money = money;
         m_arr_investments = new ArrayList<>();
     }
 
-    public String getID() { return m_id; }
+    public int getID() { return m_id; }
 
     public double getMoney() { return m_money; }
 

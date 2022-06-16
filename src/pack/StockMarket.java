@@ -6,7 +6,7 @@ public class StockMarket {
 
     private static List<Investment> m_arr_all_investments = new ArrayList<>();
     private static List<Trader> m_arr_all_traders = new ArrayList<>();
-    private static Trader m_current_trader = new Trader(1200,"11");
+    private static Trader m_current_trader = new Trader(1200,11);
 
     public StockMarket()
     {
@@ -20,13 +20,13 @@ public class StockMarket {
 
     public static Trader getCurrentTrader() { return m_current_trader; }
 
-    public static boolean authenticateTrader(String id)
+    public static boolean authenticateTrader(int id)
     {
         boolean res = false;
 
         for (Trader temp : m_arr_all_traders)
         {
-            if (id.equals(temp.getID()))        //if an id from database equals the user input
+            if (id == temp.getID())        //if an id from database equals the user input
             {                                                     //identify the current user
                 res = true;
                 m_current_trader = temp;                          //set the current trader
@@ -47,10 +47,6 @@ public class StockMarket {
         StockMarket.getArrAllInvestments().add(stock_obj2);
         StockMarket.getArrAllTraders().add(m_current_trader);
 
-        //m_current_trader.buyInvestment("Apple",1);
-       // m_current_trader.buyInvestment("Apple",1);
-       // m_current_trader.buyInvestment("Tesla",1);
-        //m_current_trader.sellInvestment("Apple",1);
 
     }
 }
