@@ -4,7 +4,7 @@ import java.awt.*;
 
 public class GUI {
 
-    private static JFrame m_frame  = new JFrame();
+    private static final JFrame m_frame  = new JFrame();
 
     public static JFrame getFrame() { return m_frame; }
 
@@ -15,7 +15,7 @@ public class GUI {
         JTextField field = new JTextField("Please enter your ID",20);
 
         panel.setLayout(new GridBagLayout());                         //this layout puts the authentication window
-        panel.add(field);                                          //in the centre of the frame
+        panel.add(field);                                            //in the centre of the frame
         panel.add(button);
         m_frame.add(BorderLayout.CENTER,panel);
 
@@ -26,7 +26,7 @@ public class GUI {
 
             try
             {
-                if (StockMarket.authenticateTrader(Integer.parseInt(user_input)))        //if the user inputs an appropriate ID
+                if (Trader.authenticateTrader(Integer.parseInt(user_input)))        //if the user inputs an appropriate ID
                 {
                     m_frame.remove(panel);
                     m_frame.getContentPane().repaint();          //repaint() tells Swing that an area of the window is dirty after a component has been removed
@@ -146,7 +146,6 @@ public class GUI {
                 try
                 {
                     StockMarket.getCurrentTrader().buyInvestment(company_field.getText(), Integer.parseInt(number_field.getText()));
-                    JOptionPane.showMessageDialog(m_frame,"Your purchase has been confirmed!");
                 }
                 catch(Exception exep)
                 {
@@ -221,10 +220,7 @@ public class GUI {
             sell_button2.addActionListener(event5 ->
             {
                 try
-                {
-                    StockMarket.getCurrentTrader().sellInvestment(company_field.getText(), Integer.parseInt(number_field.getText()));
-                    JOptionPane.showMessageDialog(m_frame,"Success!");
-                }
+                { StockMarket.getCurrentTrader().sellInvestment(company_field.getText(), Integer.parseInt(number_field.getText())); }
                 catch(Exception exep)
                 {
                     company_field.setText("You should enter a name of the investment here");

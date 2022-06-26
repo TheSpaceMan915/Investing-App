@@ -38,7 +38,7 @@ public class Trader {
             exep.printStackTrace();
         }
 
-        if (m_money - investments_price > 0)
+        if (m_money - investments_price >= 0)
         {
             if (investment_on_market.getAmount() >= number)
             {
@@ -47,7 +47,11 @@ public class Trader {
 
                 //amount of investments that are available after the purchase
                 int amount_after = investment_on_market.getAmount() - number;
+
                 investment_on_market.setAmount(amount_after);
+                m_money -= investments_price;
+
+                JOptionPane.showMessageDialog(GUI.getFrame(),"Your purchase has been confirmed!");
 
 
                 //if the trader has this type of investment object in his portfolio, add to that object new investments
@@ -68,8 +72,6 @@ public class Trader {
                     temp.setAmount(number);
                     m_arr_investments.add(temp);
                 }
-
-                m_money -= investments_price;
             }
             else
             { JOptionPane.showMessageDialog(GUI.getFrame(),"There are not enough stocks on the market. We only have " +  investment_on_market.getAmount() + " of them"); }
@@ -85,17 +87,40 @@ public class Trader {
 
         if (trader_investment != null)             //if the investment has been found in the trader's portfolio
         {
-            investment_on_market.setAmount(investment_on_market.getAmount() + number);
-            trader_investment.setAmount(trader_investment.getAmount() - number);
+            if (trader_investment.getAmount() >= number)
+            {
+                investment_on_market.setAmount(investment_on_market.getAmount() + number);
+                trader_investment.setAmount(trader_investment.getAmount() - number);
 
-            double investments_price = investment_on_market.getPrice() * number;;
-            StockMarket.getCurrentTrader().setMoney(StockMarket.getCurrentTrader().getMoney() + investments_price);
+                double investments_price = investment_on_market.getPrice() * number;
+                StockMarket.getCurrentTrader().setMoney(StockMarket.getCurrentTrader().getMoney() + investments_price);
 
-            if (trader_investment.getAmount() == 0)
-            { StockMarket.getCurrentTrader().getArrInvestments().remove(trader_investment); }
+                JOptionPane.showMessageDialog(GUI.getFrame(), "Success!");
+
+                if (trader_investment.getAmount() == 0) {
+                    StockMarket.getCurrentTrader().getArrInvestments().remove(trader_investment);
+                }
+            }
+            else
+            { JOptionPane.showMessageDialog(GUI.getFrame(),"You don't have that many stocks to sell!"); }
         }
         else
         { JOptionPane.showMessageDialog(GUI.getFrame(),"There is no stock like this in your portfolio"); }
     }
 
+    public static boolean authenticateTrader(int id)
+    {
+        boolean res = false;
+
+        for (Trader temp : StockMarket.getArrAllTraders())
+        {
+            if (id == temp.getID())                         //if an id from database equals the user input
+            {                                               //identify the current user
+                res = true;
+                StockMarket.setCurrentTrader(temp);                    //set the current trader
+                break;
+            }
+        }
+        return res;
+    }
 }

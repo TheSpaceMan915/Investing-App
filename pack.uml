@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>pack</OriginalElement>
+  <nodes>
+    <node x="64.88693744931544" y="110.4801817199054">pack.Stock</node>
+    <node x="790.3380316695532" y="110.12954846437863">pack.GUI</node>
+    <node x="790.3380316695532" y="-260.3165534460246">pack.Trader</node>
+    <node x="436.61248455943434" y="-260.3165534460246">pack.DataBaseManager</node>
+    <node x="97.95497823997013" y="-260.3165534460246">pack.Investment</node>
+    <node x="436.61248455943434" y="110.12954846437863">pack.StockMarket</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="pack.Stock" target="pack.Investment" relationship="GENERALIZATION">
+      <point x="-4.931959209345308" y="-54.0" />
+      <point x="0.0" y="153.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="1.026092529296875" showDependencies="false" x="646.9319810843767" y="35.574101061773206" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Constructors</Category>
+    <Category>Fields</Category>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
