@@ -79,16 +79,17 @@ public class GUI {
             GridBagLayout layout_obj = new GridBagLayout();
             trader_info_panel.setLayout(layout_obj);
             GridBagConstraints constraints_obj = new GridBagConstraints();
-            constraints_obj.anchor = GridBagConstraints.CENTER;
 
             JLabel id_label = new JLabel("ID: "+ StockMarket.getCurrentTrader().getID());
             JLabel money_label = new JLabel("Money: "+ StockMarket.getCurrentTrader().getMoney());
+            JLabel portfolio_label = new JLabel("The total worth of your portfolio is " + StockMarket.getCurrentTrader().calculateTraderPortfolioWorth());
             JLabel investments_label = new JLabel("Your investments ");
 
             Font font_obj = new Font("Serif",Font.PLAIN,24);
             id_label.setFont(font_obj);
             money_label.setFont(font_obj);
             investments_label.setFont(font_obj);
+            portfolio_label.setFont(font_obj);
 
 
             //create a JTable to show trader's stocks
@@ -109,9 +110,10 @@ public class GUI {
             scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
             addComponentsToPanel(id_label,trader_info_panel,layout_obj,constraints_obj,0,0,1,1);
-            addComponentsToPanel(money_label,trader_info_panel,layout_obj,constraints_obj,0,2,1,1);
-            addComponentsToPanel(investments_label,trader_info_panel,layout_obj,constraints_obj,0,4,1,1);
-            addComponentsToPanel(scroller,trader_info_panel,layout_obj,constraints_obj,0,5,1,1);
+            addComponentsToPanel(money_label,trader_info_panel,layout_obj,constraints_obj,0,1,1,1);
+            addComponentsToPanel(portfolio_label,trader_info_panel,layout_obj,constraints_obj,0,2,1,1);
+            addComponentsToPanel(investments_label,trader_info_panel,layout_obj,constraints_obj,0,3,1,1);
+            addComponentsToPanel(scroller,trader_info_panel,layout_obj,constraints_obj,0,4,1,1);
 
             m_frame.add(BorderLayout.CENTER,trader_info_panel);
             m_frame.add(BorderLayout.SOUTH,return_button);
@@ -203,19 +205,44 @@ public class GUI {
             JPanel sell_panel = new JPanel();
             GridBagLayout layout_obj = new GridBagLayout();
             sell_panel.setLayout(layout_obj);
-            GridBagConstraints contr_obj = new GridBagConstraints();
             JLabel company_label = new JLabel("Enter investment ");
             JLabel number_label = new JLabel("Enter amount ");
+            JLabel invest_label = new JLabel("Investments available for selling");
             JTextField company_field = new JTextField(20);
             JTextField number_field = new JTextField(20);
+
+            GridBagConstraints constraints_obj = new GridBagConstraints();
+            constraints_obj.anchor = GridBagConstraints.CENTER;
 
             Font font_obj = new Font("Serif",Font.PLAIN,24);
             company_label.setFont(font_obj);
             number_label.setFont(font_obj);
+            invest_label.setFont(font_obj);
 
             JButton sell_button2 = new JButton("Sell");
             GridBagConstraints button2_contr = new GridBagConstraints();
             button2_contr.anchor = GridBagConstraints.LINE_END;
+
+
+            //create a JTable to show trader's stocks
+            String[] column_name = {"Investment", "Amount","Price for 1", "Price for all"};
+            final int arr_size = StockMarket.getCurrentTrader().getArrInvestments().size();
+            final int columns_number = column_name.length;
+            Object[][] data_arr = new Object[arr_size][columns_number];
+
+            for (int i = 0; i < arr_size; i++)
+            {
+                data_arr[i][0] = StockMarket.getCurrentTrader().getArrInvestments().get(i).getKey();
+                data_arr[i][1] = StockMarket.getCurrentTrader().getArrInvestments().get(i).getAmount();
+                data_arr[i][2] = StockMarket.getArrAllInvestments().get(i).getPrice();
+                data_arr[i][3] = StockMarket.getCurrentTrader().getArrInvestments().get(i).getPrice() * StockMarket.getCurrentTrader().getArrInvestments().get(i).getAmount();
+            }
+
+            JTable data_table = new JTable(data_arr,column_name);
+            JScrollPane scroller = new JScrollPane(data_table);
+            scroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+            scroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
 
             sell_button2.addActionListener(event5 ->
             {
@@ -228,13 +255,15 @@ public class GUI {
                 }
             });
 
-            addComponentsToPanel(company_label,sell_panel,layout_obj,contr_obj,0,0,1,1);
-            addComponentsToPanel(company_field,sell_panel,layout_obj,contr_obj,1,0,1,1);
-            addComponentsToPanel(number_label,sell_panel,layout_obj,contr_obj,0,1,1,1);
-            addComponentsToPanel(number_field,sell_panel,layout_obj,contr_obj,1,1,1,1);
-            addComponentsToPanel(sell_button2,sell_panel,layout_obj,button2_contr,1,2,1,1);
+            addComponentsToPanel(invest_label,sell_panel,layout_obj,constraints_obj,0,0,2,1);
+            addComponentsToPanel(scroller,sell_panel,layout_obj,constraints_obj,0,1,2,1);
+            addComponentsToPanel(company_label,sell_panel,layout_obj,constraints_obj,0,2,1,1);
+            addComponentsToPanel(company_field,sell_panel,layout_obj,button2_contr,1,2,1,1);
+            addComponentsToPanel(number_label,sell_panel,layout_obj,constraints_obj,0,3,1,1);
+            addComponentsToPanel(number_field,sell_panel,layout_obj,button2_contr,1,3,1,1);
+            addComponentsToPanel(sell_button2,sell_panel,layout_obj,button2_contr,1,4,1,1);
 
-            m_frame.add(BorderLayout.CENTER,sell_panel);
+            m_frame.add(BorderLayout.NORTH,sell_panel);
             m_frame.add(BorderLayout.SOUTH,return_button);
         });
     }
@@ -256,7 +285,7 @@ public class GUI {
     {
         m_frame.setTitle("Investing App");
         m_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        m_frame.setSize(600,600);
+        m_frame.setSize(700,700);
 
         drawAuthenticationWindow();
         m_frame.setVisible(true);

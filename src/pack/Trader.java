@@ -25,6 +25,15 @@ public class Trader {
 
     private void setMoney(double money) { m_money = money; }
 
+    public double calculateTraderPortfolioWorth()
+    {
+        double sum = 0.0;
+        for (Investment temp : m_arr_investments)
+        { sum += temp.getAmount() * temp.getPrice(); }
+
+        return sum;
+    }
+
     public void buyInvestment(String key, int number)
     {
         Investment investment_on_market = Stock.findInvestmentOnMarket(key);
